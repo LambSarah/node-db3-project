@@ -53,19 +53,24 @@ const findSteps = async scheme_id => {
   return steps
 
 }
-
-function add(scheme) { // EXERCISE D
+async function add(scheme) { // EXERCISE D
   /*
     1D- This function creates a new scheme and resolves to _the newly created scheme_.
   */
+  const { scheme_name } = scheme
+  const [id] = await db("schemes").insert({ "scheme_name": scheme_name })
+  return db('schemes').where({ "scheme_id": id }).first()
 }
 
-function addStep(scheme_id, step) { // EXERCISE E
+async function addStep(scheme_id, step) { // EXERCISE E
   /*
     1E- This function adds a step to the scheme with the given `scheme_id`
     and resolves to _all the steps_ belonging to the given `scheme_id`,
     including the newly created one.
   */
+  const { step_number, instructions } = step;
+  await db('steps').insert({ "scheme_id": scheme_id, "step_number": step_number, "instructions": instructions })
+  return db('steps').orderBy('steps.step_number').where({ 'scheme_id': scheme_id })
 }
 
 module.exports = {

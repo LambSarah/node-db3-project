@@ -22,12 +22,16 @@ const checkSchemeId = async (req, res, next) => {
 */
 const validateScheme = async (req, res, next) => {
   try {
-    const body = req.body
-    if (!body.scheme_name) {
+    let scheme_name = req.body.scheme_name
+    console.log(scheme_name)
+    if (!scheme_name || typeof scheme_name !== 'string' || scheme_name === undefined) {
+
       next({
-        status: 400, message: 'invalid scheme name'
+        message: 'invalid scheme name',
+        status: 400
       })
     } else {
+      res.scheme_name = scheme_name
       next()
     }
   } catch (err) {
