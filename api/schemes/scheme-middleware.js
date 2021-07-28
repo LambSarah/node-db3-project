@@ -1,23 +1,16 @@
 const Schemes = require('./scheme-model')
 
 
-const checkSchemeId = (req, res, next) => {
-  try {
-    const { id } = req.params
-    const scheme = Schemes.findById(id)
-    if (scheme) {
-      req.scheme = scheme
-      next()
-    } else {
-      next({
-        status: 404,
-        message: `scheme with scheme_id ${id} not found`
-      })
-    }
-  } catch (err) {
-    next(err)
+const checkSchemeId = async (req, res, next) => {
+  const id = req.params.scheme_id;
+  const scheme = await Schemes.findById(id);
+  if (!scheme) {
+    res.status(404).json({ message: `scheme with scheme_id ${id} not found` });
+  } else {
+    next();
   }
-}
+};
+
 
 /*
   If `scheme_name` is missing, empty string or not a string:
@@ -67,9 +60,10 @@ const validateStep = async (req, res, next) => {
     next(err)
   }
 }
-
 module.exports = {
   checkSchemeId,
   validateScheme,
   validateStep,
+
 }
+

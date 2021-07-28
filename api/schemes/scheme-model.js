@@ -20,19 +20,22 @@ const findById = async (scheme_id) => { // EXERCISE B
       .where('s.scheme_id', scheme_id)
       .orderBy('st.step_number', 'asc')
 
-    const [formattedScheme] = query;
-    return {
-      "scheme_id": formattedScheme.scheme_id,
-      "scheme_name": formattedScheme.scheme_name,
-      "steps": query[0].step_id ? query.map(obj => {
+    console.log(query[0])
+
+    let formattedScheme = []
+
+    formattedScheme = {
+      scheme_id: query[0].scheme_id,
+      scheme_name: query[0].scheme_name,
+      "steps": query[0].step_id ? query.map(step => {
         return {
-          "step_id": obj.step_id,
-          "step_number": obj.step_number,
-          "instructions": obj.instructions
+          step_number: step.step_number,
+          step_id: step.step_id,
+          instructions: step.instructions
         }
-      })
-        : []
+      }) : []
     }
+    return formattedScheme;
   }
   catch (err) {
     console.log(err)
@@ -40,13 +43,15 @@ const findById = async (scheme_id) => { // EXERCISE B
 }
 
 
-function findSteps(scheme_id) { // EXERCISE C
+const findSteps = async scheme_id => {
 
-  return db('steps as st')
+  const steps = await db('steps as st')
     .leftJoin('schemes as sc', 'sc.scheme_id', 'st.scheme_id')
-    .select('st.steps_id', 'st.step_number', 'st.instructions', 'sc.scheme_name')
     .where('st.scheme_id', scheme_id)
     .orderBy('st.step_number', 'asc')
+
+  return steps
+
 }
 
 function add(scheme) { // EXERCISE D
